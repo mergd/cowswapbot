@@ -107,10 +107,10 @@ async def handle_webhook(input: Item):
         result = parse_hex(orderFill.get('data'))
         etherscan_url = f"https://etherscan.io/tx/{orderFill.get('transactionHash')}"
         msg = f"Order filled for {eth_address}:\n View transaction here: {etherscan_url}"
-
+        print(msg)
         # await bot.get_channel(781679792667492375).send(msg)
-        asyncio.create_task(send_message(
-            bot.get_channel(781679792667492375), msg))
+        # asyncio.create_task(send_message(
+        #     bot.get_channel(781679792667492375), msg))
 
         # if (firehose_receivers == None):
         #     continue
@@ -197,12 +197,14 @@ def run_fastapi():
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
-if __name__ == "__main__":
+async def main():
+    asyncio.create_task(send_message(
+        bot.get_channel(781679792667492375), "test test test"))
 
+if __name__ == "__main__":
     load_dotenv()
     TOKEN = os.getenv('BOT_TOKEN')
-    # Run FastAPI in a separate thread
     fastapi_thread = Thread(target=run_fastapi)
     fastapi_thread.start()
-
     bot.run(TOKEN)
+    asyncio.run(main())
